@@ -50,14 +50,14 @@ export function Globe({ className = "" }: GlobeProps) {
         { location: [1.3521, 103.8198], size: 0.05 },  // Singapore
         { location: [35.6762, 139.6503], size: 0.04 }, // Tokyo
       ],
-      onRender: (state) => {
+      onRender: (state: { phi: number }) => {
         // Continuous auto-rotation
         if (pointerInteracting.current === null) {
           phi += 0.004;
         }
         state.phi = phi + pointerInteractionMovement.current;
       },
-    });
+    } as Parameters<typeof createGlobe>[1]);
 
     return () => {
       globe.destroy();
