@@ -54,7 +54,10 @@ const FEATURED_PROJECTS: CaseStudy[] = [
 
 export function CaseStudies() {
   return (
-    <section id="work" className="relative py-20 sm:py-28 bg-[#040404] text-white overflow-hidden">
+    <section
+  id="work"
+  className="relative py-20 sm:py-28 bg-transparent text-white overflow-hidden scroll-mt-20 lg:scroll-mt-24 z-10"
+>
       {/* Ambient background bloom */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-[#00c896]/5 blur-[140px] rounded-full pointer-events-none -z-10" />
 

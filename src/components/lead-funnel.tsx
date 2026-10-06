@@ -6,18 +6,20 @@ import { Sparkles, Check, ArrowRight, Loader2, CheckCircle2, AlertCircle } from 
 import { submitLeadAction } from "@/app/actions/submit-lead";
 
 const SERVICE_OPTIONS = [
+  "Website Development",
   "Custom Web Application",
-  "Autonomous Systems / Pipelines",
-  "SEO & AEO Rank Architecture",
-  "Lead Generation Funnel",
-  "System Architecture Audit",
+  "AI Automation Setup",
+  "AI Chatbots",
+  "Full Brand Creation",
+  "Social Media Ads",
+  "SEO Optimization",
 ];
 
 const BUDGET_RANGES = [
-  "$3,000 - $5,000",
+  "$500 - $2,000",
+  "$2,000 - $5,000",
   "$5,000 - $10,000",
-  "$10,000 - $25,000",
-  "$25,000+",
+  "$10,000+",
 ];
 
 export function LeadFunnel() {
@@ -79,10 +81,10 @@ const [formMountTime] = useState<number>(() => Date.now());
   };
 
   return (
-    <section 
-      id="contact" 
-      className="relative py-20 sm:py-28 bg-[#040404] text-white overflow-hidden scroll-mt-20 lg:scroll-mt-24"
-    >
+    <section
+  id="contact"
+  className="relative py-20 sm:py-28 bg-transparent text-white overflow-hidden scroll-mt-20 lg:scroll-mt-24 z-10"
+>
       {/* Ambient background glow */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-[#00c896]/10 blur-[130px] rounded-full pointer-events-none -z-10" />
 

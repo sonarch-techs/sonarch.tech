@@ -62,9 +62,9 @@ const PROTOCOL_STEPS = [
 export function SystemsWorkflow() {
   return (
     <section
-      id="systems"
-      className="relative py-20 sm:py-28 bg-[#040404] text-white overflow-hidden scroll-mt-20 lg:scroll-mt-24"
-    >
+  id="systems"
+  className="relative py-20 sm:py-28 bg-transparent text-white overflow-hidden scroll-mt-20 lg:scroll-mt-24 z-10"
+>
       {/* Ambient background bloom */}
       <div className="absolute top-1/2 right-1/4 w-[500px] h-[300px] bg-[#00c896]/5 blur-[140px] rounded-full pointer-events-none -z-10" />
 

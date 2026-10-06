@@ -46,9 +46,9 @@ const FEATURED_INSIGHTS: InsightPost[] = [
 export function Insights() {
   return (
     <section
-      id="insights"
-      className="relative py-20 sm:py-28 bg-[#040404] text-white overflow-hidden scroll-mt-20 lg:scroll-mt-24"
-    >
+  id="insights"
+  className="relative py-20 sm:py-28 bg-transparent text-white overflow-hidden scroll-mt-20 lg:scroll-mt-24 z-10"
+>
       {/* Ambient background bloom */}
       <div className="absolute top-1/2 left-1/3 w-[500px] h-[300px] bg-[#00c896]/5 blur-[140px] rounded-full pointer-events-none -z-10" />
 
