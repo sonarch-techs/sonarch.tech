@@ -43,7 +43,7 @@ export function Globe({ className = "" }: GlobeProps) {
 
     const radius = 82;
 
-    // 2. Solid Obsidian Inner Core (Occludes back-facing elements naturally)
+    // 2. Solid Obsidian Inner Core (Blocks back-facing elements naturally)
     const coreGeo = new THREE.SphereGeometry(radius * 0.985, 48, 48);
     const coreMat = new THREE.MeshBasicMaterial({
       color: 0x040404,
@@ -52,7 +52,18 @@ export function Globe({ className = "" }: GlobeProps) {
     const coreMesh = new THREE.Mesh(coreGeo, coreMat);
     rootGroup.add(coreMesh);
 
-    // 3. Ethereal Atmospheric Rim Glow (Custom Fresnel Horizon)
+    // 3. Crisp Camera-Facing Planetary Silhouette Rim
+    const rimGeo = new THREE.RingGeometry(radius * 1.006, radius * 1.018, 128);
+    const rimMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.55,
+      side: THREE.DoubleSide,
+    });
+    const rimMesh = new THREE.Mesh(rimGeo, rimMat);
+    scene.add(rimMesh);
+
+    // 4. Atmospheric Fresnel Edge Glow
     const atmosphereGeo = new THREE.SphereGeometry(radius * 1.025, 48, 48);
     const atmosphereMat = new THREE.ShaderMaterial({
       transparent: true,
@@ -74,18 +85,20 @@ export function Globe({ className = "" }: GlobeProps) {
           vec3 viewDir = normalize(-vPosition);
           float rim = 1.0 - max(dot(viewDir, vNormal), 0.0);
           rim = pow(rim, 2.8);
-          gl_FragColor = vec4(0.0, 0.784, 0.588, rim * 0.35);
+          gl_FragColor = vec4(0.0, 0.784, 0.588, rim * 0.32);
         }
       `,
     });
     const atmosphereMesh = new THREE.Mesh(atmosphereGeo, atmosphereMat);
     rootGroup.add(atmosphereMesh);
 
-    // 4. World Continents Map Layer (/public/world-map.png)
+    // 5. World Continents Map Layer (/public/world-map.png)
     const textureLoader = new THREE.TextureLoader();
+    let mapTexture: THREE.Texture | null = null;
     textureLoader.load(
       "/world-map.png",
       (texture) => {
+        mapTexture = texture;
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.ClampToEdgeWrapping;
 
@@ -106,10 +119,10 @@ export function Globe({ className = "" }: GlobeProps) {
       () => setIsLoaded(true)
     );
 
-    // 5. Architectural Latitude & Longitude Wireframe Grid
+    // 6. Architectural Latitude & Longitude Wireframe Grid
     const latLongGeo = new THREE.SphereGeometry(radius * 1.002, 24, 16);
     const latLongMat = new THREE.MeshBasicMaterial({
-      color: 0x242424,
+      color: 0x222222,
       wireframe: true,
       transparent: true,
       opacity: 0.45,
@@ -117,7 +130,7 @@ export function Globe({ className = "" }: GlobeProps) {
     const latLongMesh = new THREE.Mesh(latLongGeo, latLongMat);
     rootGroup.add(latLongMesh);
 
-    // 6. Geodesic Icosahedron Facet Cage (Structural Blueprint Layer)
+    // 7. Geodesic Icosahedron Structural Facet Shell
     const geodesicGeo = new THREE.IcosahedronGeometry(radius * 1.012, 2);
     const geodesicMat = new THREE.MeshBasicMaterial({
       color: 0x00c896,
@@ -128,13 +141,13 @@ export function Globe({ className = "" }: GlobeProps) {
     const geodesicMesh = new THREE.Mesh(geodesicGeo, geodesicMat);
     rootGroup.add(geodesicMesh);
 
-    // 7. Global Infrastructure Nodes (SF, London, Tokyo, Singapore, Dubai)
+    // 8. Global Infrastructure Hub Nodes
     const hubCoordinates = [
-      { lat: 37.77, lon: -122.41 },
-      { lat: 51.5, lon: -0.12 },
-      { lat: 35.67, lon: 139.65 },
-      { lat: 1.35, lon: 103.82 },
-      { lat: 25.2, lon: 55.27 },
+      { lat: 37.77, lon: -122.41 }, // San Francisco
+      { lat: 51.5, lon: -0.12 },    // London
+      { lat: 35.67, lon: 139.65 },  // Tokyo
+      { lat: 1.35, lon: 103.82 },   // Singapore
+      { lat: 25.2, lon: 55.27 },    // Dubai
     ];
 
     const toVector3 = (lat: number, lon: number, r: number) => {
@@ -148,7 +161,7 @@ export function Globe({ className = "" }: GlobeProps) {
     };
 
     const hubVectors = hubCoordinates.map((h) => toVector3(h.lat, h.lon, radius * 1.004));
-    const beaconGeo = new THREE.SphereGeometry(1.5, 12, 12);
+    const beaconGeo = new THREE.SphereGeometry(1.4, 12, 12);
     const beaconMat = new THREE.MeshBasicMaterial({ color: 0x00c896 });
 
     hubVectors.forEach((pos) => {
@@ -157,7 +170,7 @@ export function Globe({ className = "" }: GlobeProps) {
       rootGroup.add(beacon);
     });
 
-    // 8. Great-Circle Trajectory Data Arcs with Gliding Packets
+    // 9. Great-Circle Trajectory Data Arcs with Gliding Packets
     const arcConnections = [
       [0, 1], // SF -> London
       [1, 4], // London -> Dubai
@@ -167,6 +180,8 @@ export function Globe({ className = "" }: GlobeProps) {
     ];
 
     const arcCurves: THREE.QuadraticBezierCurve3[] = [];
+    const arcLines: THREE.Line[] = [];
+
     arcConnections.forEach(([i, j]) => {
       const start = hubVectors[i];
       const end = hubVectors[j];
@@ -184,7 +199,9 @@ export function Globe({ className = "" }: GlobeProps) {
         transparent: true,
         opacity: 0.32,
       });
-      rootGroup.add(new THREE.Line(curveGeo, curveMat));
+      const line = new THREE.Line(curveGeo, curveMat);
+      arcLines.push(line);
+      rootGroup.add(line);
     });
 
     const packetGeo = new THREE.SphereGeometry(1.3, 8, 8);
@@ -195,33 +212,66 @@ export function Globe({ className = "" }: GlobeProps) {
       return packet;
     });
 
-    // 9. Independent Multi-Axis Satellite Constellation System
-    // Each particle revolves on its OWN individual 3D inclination vector and orbit track
-    interface SatelliteOrbit {
+    // 10. MULTI-LAYER ORBITAL SATELLITE ENGINE
+    // Each layer has its own orbital plane, speed, and uniform color across all its nodes
+    interface OrbitalLayer {
       rotator: THREE.Group;
       speed: number;
     }
 
-    const satelliteOrbits: SatelliteOrbit[] = [];
+    const orbitalLayers: OrbitalLayer[] = [];
+    const layerDisposables: { geo: THREE.BufferGeometry; mat: THREE.Material }[] = [];
 
-    const satelliteConfigs = [
-      { tiltX: 0.38, tiltY: 0.25, tiltZ: 0.72, radius: 91, speed: 0.012, coreColor: 0x00c896, haloColor: 0x00c896, size: 2.1 },
-      { tiltX: -0.65, tiltY: 0.42, tiltZ: -0.35, radius: 88, speed: -0.014, coreColor: 0x5eead4, haloColor: 0x5eead4, size: 1.8 },
-      { tiltX: 1.15, tiltY: -0.28, tiltZ: 0.55, radius: 95, speed: 0.009, coreColor: 0x00c896, haloColor: 0x00c896, size: 2.3 },
-      { tiltX: -0.22, tiltY: 0.88, tiltZ: -1.05, radius: 90, speed: -0.011, coreColor: 0x38bdf8, haloColor: 0x38bdf8, size: 1.9 },
-      { tiltX: 0.82, tiltY: -0.78, tiltZ: 0.22, radius: 93, speed: 0.013, coreColor: 0x00c896, haloColor: 0x00c896, size: 2.0 },
-      { tiltX: -1.18, tiltY: 0.15, tiltZ: 0.68, radius: 87, speed: -0.008, coreColor: 0x5eead4, haloColor: 0x5eead4, size: 1.7 },
-      { tiltX: 0.44, tiltY: 1.18, tiltZ: -0.52, radius: 96, speed: 0.010, coreColor: 0x00c896, haloColor: 0x00c896, size: 2.2 },
-      { tiltX: -0.48, tiltY: -0.58, tiltZ: 1.12, radius: 89, speed: -0.012, coreColor: 0x38bdf8, haloColor: 0x38bdf8, size: 1.8 },
+    const layerConfigs = [
+      {
+        name: "Layer 1 - Mint",
+        radius: radius * 1.06,
+        tiltX: 0.28,
+        tiltZ: 0.12,
+        speed: 0.012,
+        colorHex: 0x00c896, // Electric Mint
+        dotCount: 5,
+        dotSize: 2.1,
+      },
+      {
+        name: "Layer 2 - Cyan",
+        radius: radius * 1.11,
+        tiltX: 0.76,
+        tiltZ: -0.42,
+        speed: -0.009,
+        colorHex: 0x38bdf8, // Sky Cyan
+        dotCount: 4,
+        dotSize: 2.3,
+      },
+      {
+        name: "Layer 3 - Purple",
+        radius: radius * 1.16,
+        tiltX: -0.82,
+        tiltZ: 0.68,
+        speed: 0.008,
+        colorHex: 0x008c69, // electric mint
+        dotCount: 4,
+        dotSize: 2.2,
+      },
+      {
+        name: "Layer 4 - Royal Blue",
+        radius: radius * 1.21,
+        tiltX: -0.32,
+        tiltZ: -0.84,
+        speed: -0.007,
+        colorHex: 0x00fff0, // Cobalt Blue
+        dotCount: 4,
+        dotSize: 2.4,
+      },
     ];
 
-    satelliteConfigs.forEach((cfg) => {
-      // 1. Orbital Plane Group - oriented to this particle's exclusive 3D rotation axis
+    layerConfigs.forEach((cfg) => {
+      // 1. Orbital Plane Group
       const planeGroup = new THREE.Group();
-      planeGroup.rotation.set(cfg.tiltX, cfg.tiltY, cfg.tiltZ);
+      planeGroup.rotation.set(cfg.tiltX, 0, cfg.tiltZ);
 
-      // 2. Blueprint Orbital Vector Track
-      const trackSegments = 64;
+      // 2. Blueprint Orbital Guide Track
+      const trackSegments = 96;
       const trackPoints: THREE.Vector3[] = [];
       for (let i = 0; i <= trackSegments; i++) {
         const theta = (i / trackSegments) * Math.PI * 2;
@@ -235,65 +285,54 @@ export function Globe({ className = "" }: GlobeProps) {
       }
       const trackGeo = new THREE.BufferGeometry().setFromPoints(trackPoints);
       const trackMat = new THREE.LineBasicMaterial({
-        color: cfg.coreColor,
+        color: cfg.colorHex,
         transparent: true,
-        opacity: 0.18,
+        opacity: 0.2,
       });
       planeGroup.add(new THREE.Line(trackGeo, trackMat));
+      layerDisposables.push({ geo: trackGeo, mat: trackMat });
 
-      // 3. Independent Rotator Group for this particle
-      const rotatorGroup = new THREE.Group();
+      // 3. Rotator Group
+      const layerRotator = new THREE.Group();
 
-      // High-intensity core sphere
-      const coreGeo = new THREE.SphereGeometry(cfg.size, 16, 16);
-      const coreMat = new THREE.MeshBasicMaterial({ color: cfg.coreColor });
-      const coreMesh = new THREE.Mesh(coreGeo, coreMat);
-      coreMesh.position.set(cfg.radius, 0, 0);
+      const particleGeo = new THREE.SphereGeometry(cfg.dotSize, 14, 14);
+      const particleMat = new THREE.MeshBasicMaterial({ color: cfg.colorHex });
 
-      // Soft radiant halo envelope
-      const haloGeo = new THREE.SphereGeometry(cfg.size * 1.8, 16, 16);
+      const haloGeo = new THREE.SphereGeometry(cfg.dotSize * 1.8, 14, 14);
       const haloMat = new THREE.MeshBasicMaterial({
-        color: cfg.haloColor,
+        color: cfg.colorHex,
         transparent: true,
         opacity: 0.28,
         blending: THREE.AdditiveBlending,
       });
-      const haloMesh = new THREE.Mesh(haloGeo, haloMat);
-      coreMesh.add(haloMesh);
 
-      rotatorGroup.add(coreMesh);
-      planeGroup.add(rotatorGroup);
+      layerDisposables.push(
+        { geo: particleGeo, mat: particleMat },
+        { geo: haloGeo, mat: haloMat }
+      );
+
+      for (let i = 0; i < cfg.dotCount; i++) {
+        const angle = (i / cfg.dotCount) * Math.PI * 2;
+        const particleMesh = new THREE.Mesh(particleGeo, particleMat);
+        particleMesh.position.set(
+          cfg.radius * Math.cos(angle),
+          0,
+          cfg.radius * Math.sin(angle)
+        );
+
+        const haloMesh = new THREE.Mesh(haloGeo, haloMat);
+        particleMesh.add(haloMesh);
+
+        layerRotator.add(particleMesh);
+      }
+
+      planeGroup.add(layerRotator);
       rootGroup.add(planeGroup);
 
-      satelliteOrbits.push({ rotator: rotatorGroup, speed: cfg.speed });
+      orbitalLayers.push({ rotator: layerRotator, speed: cfg.speed });
     });
 
-    // 10. Outer Calibrated Astrolabe Telemetry Rings
-    const ringGeo = new THREE.RingGeometry(radius * 1.22, radius * 1.232, 80);
-    const ringMat = new THREE.MeshBasicMaterial({
-      color: 0x00c896,
-      transparent: true,
-      opacity: 0.32,
-      side: THREE.DoubleSide,
-    });
-    const mainRing = new THREE.Mesh(ringGeo, ringMat);
-    mainRing.rotation.x = Math.PI / 2.3;
-    mainRing.rotation.y = Math.PI / 8;
-    rootGroup.add(mainRing);
-
-    const outerRingGeo = new THREE.RingGeometry(radius * 1.32, radius * 1.325, 64);
-    const outerRingMat = new THREE.MeshBasicMaterial({
-      color: 0x1f1f1f,
-      transparent: true,
-      opacity: 0.85,
-      side: THREE.DoubleSide,
-    });
-    const outerRing = new THREE.Mesh(outerRingGeo, outerRingMat);
-    outerRing.rotation.x = Math.PI / 2.3;
-    outerRing.rotation.y = Math.PI / 8;
-    rootGroup.add(outerRing);
-
-    // 11. Mouse & Touch Drag Controls
+    // 11. Interactive Drag / Swipe Dynamics
     let isDragging = false;
     let prevMouseX = 0;
     let prevMouseY = 0;
@@ -366,14 +405,14 @@ export function Globe({ className = "" }: GlobeProps) {
     const resizeObserver = new ResizeObserver(() => handleResize());
     resizeObserver.observe(mount);
 
-    // 12. Multi-Axis Animation Loop
+    // 12. Deprecation-Free Animation Loop (No THREE.Clock, No NaN on bootstrap)
     let animationFrameId: number;
 
-const animate = (time: number) => {
-  animationFrameId = requestAnimationFrame(animate);
-  const elapsed = time * 0.001;
+    const animate = (time: number) => {
+      animationFrameId = requestAnimationFrame(animate);
+      const elapsed = (time || performance.now()) * 0.001;
 
-      // Continuous planetary idle rotation with drag damping
+      // Idle planet rotation with drag inertia damping
       if (!isDragging) {
         rootGroup.rotation.y += 0.0016;
         velocityX *= 0.95;
@@ -382,12 +421,9 @@ const animate = (time: number) => {
         rootGroup.rotation.x += velocityY;
       }
 
-      // Counter-rotate the outer calibration telemetry ring
-      outerRing.rotation.z = -elapsed * 0.04;
-
-      // Revolve EACH particle on its own independent axis plane
-      for (let i = 0; i < satelliteOrbits.length; i++) {
-        satelliteOrbits[i].rotator.rotation.y += satelliteOrbits[i].speed;
+      // Revolve each orbital layer around its exclusive plane
+      for (let i = 0; i < orbitalLayers.length; i++) {
+        orbitalLayers[i].rotator.rotation.y += orbitalLayers[i].speed;
       }
 
       // Slide data packets across global trajectory arcs
@@ -400,9 +436,10 @@ const animate = (time: number) => {
       renderer.render(scene, camera);
     };
 
-    animate();
+    // Bootstrap loop using high-precision browser timestamp
+    animationFrameId = requestAnimationFrame(animate);
 
-    // Clean teardown for React Fast Refresh
+    // Clean teardown preventing React/Turbopack memory leaks
     return () => {
       cancelAnimationFrame(animationFrameId);
       resizeObserver.disconnect();
@@ -416,6 +453,8 @@ const animate = (time: number) => {
       renderer.dispose();
       coreGeo.dispose();
       coreMat.dispose();
+      rimGeo.dispose();
+      rimMat.dispose();
       atmosphereGeo.dispose();
       atmosphereMat.dispose();
       latLongGeo.dispose();
@@ -426,10 +465,20 @@ const animate = (time: number) => {
       beaconMat.dispose();
       packetGeo.dispose();
       packetMat.dispose();
-      ringGeo.dispose();
-      ringMat.dispose();
-      outerRingGeo.dispose();
-      outerRingMat.dispose();
+
+      if (mapTexture) {
+        mapTexture.dispose();
+      }
+
+      arcLines.forEach((line) => {
+        line.geometry.dispose();
+        (line.material as THREE.Material).dispose();
+      });
+
+      layerDisposables.forEach(({ geo, mat }) => {
+        geo.dispose();
+        mat.dispose();
+      });
 
       if (mount && domElement.parentNode === mount) {
         mount.removeChild(domElement);
