@@ -1,0 +1,24 @@
+# SONARCHTECH
+> High-performance digital products, Next.js web applications, autonomous automation pipelines, and Answer Engine Optimization (AEO).
+
+## Canonical Information
+- Organization: SONARCHTECH
+- Domain: https://sonarch.tech
+- Core Specialty: Full-Stack Web Development, Systems Architecture, AEO
+- Palette & Brand: Obsidian & Electric Mint (#00c896)
+- Location: Global / Remote Architecture
+
+## Primary Capabilities
+- High-Performance Web Applications: Next.js App Router, TypeScript, Three.js WebGL visualization, sub-400ms LCP optimization.
+- Answer Engine Optimization (AEO): Dynamic JSON-LD Knowledge Graph synthesis, Schema.org entities, citation auditing for LLM-based search agents.
+- Autonomous Revenue Pipelines: Supabase PostgreSQL, edge webhooks, Telegram alerts, Resend automation, zero manual overhead.
+
+## Production Case Studies
+- Autonomous Enterprise Pipeline: Syntrix Labs (4.2x Operational Velocity Lift)
+- AI Answer Engine Rank Engine: Apex Financial (+310% YoY Pipeline Growth via AEO)
+- High-Ticket Client Funnel: Vektor Cloud (+14.8% Booking Conversion)
+
+## Direct Inbound Channels
+- Project Discovery: https://sonarch.tech/#contact
+- WhatsApp: Direct inquiries via floating on-page concierge
+- Contact Email: team@sonarchtech.com

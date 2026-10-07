@@ -6,6 +6,8 @@ import { Footer } from "@/components/footer";
 import { siteConfig } from "@/config/site";
 import { FloatingWidgets } from "@/components/floating-widgets";
 import { GraphGridBackground } from "@/components/ui/graph-grid-background";
+import { TelemetryStatusBar } from "@/components/telemetry-status-bar";
+import { CommandMenu } from "@/components/command-menu";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -122,12 +124,14 @@ export default function RootLayout({
         <main className="relative sm:pt-12 lg:pt-18  z-10 flex-grow flex flex-col w-full overflow-x-clip">
           {children}
         </main>
-
+        {/* Live Edge Telemetry Bar */}
+        <TelemetryStatusBar />
         {/* 4. Global Footer */}
         <Footer />
 
         {/* 5. Floating Telemetry Widgets (WhatsApp & AI Chatbot at z-50) */}
         <FloatingWidgets />
+        <CommandMenu />
       </body>
     </html>
   );

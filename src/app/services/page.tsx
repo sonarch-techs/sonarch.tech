@@ -1,9 +1,7 @@
-"use client";
-
-import { motion } from "framer-motion";
+import Link from "next/link";
 import {
+  ArrowLeft,
   ArrowUpRight,
-  ArrowRight,
   Sparkles,
   CheckCircle2,
   Cpu,
@@ -12,12 +10,17 @@ import {
   Search,
   Palette,
   TrendingUp,
-  Layers,
+  ArrowRight,
 } from "lucide-react";
-import Link from "next/link";
 import { SERVICES_DATA, getService } from "@/data/services";
 
-export function Services() {
+export const metadata = {
+  title: "Engineering Capabilities & Systems Services | SONARCHTECH",
+  description:
+    "Explore our full spectrum of Next.js web application engineering, autonomous workflow automation, 24/7 AI agents, and Answer Engine Optimization (AEO).",
+};
+
+export default function ServicesPage() {
   const webDev = getService("website-development") || SERVICES_DATA[0];
   const automation = getService("ai-automation-setup") || SERVICES_DATA[1];
   const chatbot = getService("ai-chatbots") || SERVICES_DATA[2];
@@ -26,46 +29,44 @@ export function Services() {
   const ads = getService("social-media-ads") || SERVICES_DATA[5];
 
   return (
-    <section
-      id="services"
-      className="relative py-20 sm:py-28 bg-transparent text-white overflow-hidden scroll-mt-20 lg:scroll-mt-24 z-10"
-    >
-      {/* Ambient background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-[#00c896]/5 blur-[160px] rounded-full pointer-events-none -z-10" />
+    <main className="relative min-h-screen bg-transparent text-white pt-20 sm:pt-24 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      {/* Background Backlight */}
+      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-[#00c896]/10 blur-[160px] pointer-events-none z-0" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-6">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#1f1f1f] bg-[#1f1f1f]/80 text-[#00c896] text-xs font-semibold uppercase tracking-wider mb-4 font-mono">
-              <Sparkles className="w-3.5 h-3.5 text-[#00c896]" />
-              <span>Full-Stack Capabilities</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
-              High-leverage engineering &{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#00c896] to-[#00b285]">
-                growth systems.
-              </span>
-            </h2>
+      <div className="relative z-10 max-w-6xl mx-auto">
+        {/* Navigation Breadcrumb */}
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-xs font-mono text-neutral-400 hover:text-[#00c896] transition-colors mb-4 group"
+        >
+          <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
+          <span>Return to Command Center</span>
+        </Link>
+
+        {/* Header Strip */}
+        <div className="rounded-2xl border border-[#1f1f1f] bg-[#141414]/70 backdrop-blur-md p-6 sm:p-8 mb-8 sm:mb-10">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#1f1f1f] bg-[#1f1f1f]/80 text-[#00c896] text-xs font-semibold uppercase tracking-wider mb-3.5 font-mono">
+            <Sparkles className="w-3.5 h-3.5 text-[#00c896]" />
+            <span>Capability Matrix</span>
           </div>
 
-          <p className="text-sm sm:text-base text-neutral-400 max-w-sm leading-relaxed font-mono">
-            Everything you need to launch, automate, and scale your digital presence under one high-performance architecture.
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
+            Systems & Engineering{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#00c896] to-[#00b285]">
+              Services.
+            </span>
+          </h1>
+
+          <p className="mt-3.5 text-sm sm:text-base text-neutral-400 leading-relaxed max-w-2xl font-mono">
+            Everything you need to launch, automate, and scale your digital presence under one high-leverage architecture.
           </p>
         </div>
 
-        {/* Asymmetric Bento Grid (2-1 / 1-2 / 2-1) */}
+        {/* 6-Card Asymmetric Bento Grid (3-column layout) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           
           {/* Bento Card 1: Website Development (Wide 2-col) */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.45 }}
-            className="lg:col-span-2 group relative flex flex-col justify-between rounded-2xl border border-[#1f1f1f] bg-[#141414]/70 hover:bg-[#181818]/90 hover:border-[#00c896]/60 transition-all duration-300 backdrop-blur-md p-6 sm:p-8"
-          >
+          <div className="lg:col-span-2 group relative flex flex-col justify-between rounded-2xl border border-[#1f1f1f] bg-[#141414]/70 hover:bg-[#181818]/90 hover:border-[#00c896]/60 transition-all duration-300 backdrop-blur-md p-6 sm:p-8">
             <div className="absolute top-0 right-0 w-36 h-36 bg-[#00c896]/5 rounded-bl-full pointer-events-none group-hover:bg-[#00c896]/15 transition-colors" />
 
             <div>
@@ -77,11 +78,11 @@ export function Services() {
                 <span className="text-xs font-mono text-neutral-500">Tier 01 // Core</span>
               </div>
 
-              <h3 className="text-2xl sm:text-3xl font-bold text-white group-hover:text-[#00c896] transition-colors leading-snug">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white group-hover:text-[#00c896] transition-colors leading-snug">
                 <Link href={`/services/${webDev.slug}`} className="focus:outline-none">
                   {webDev.title}
                 </Link>
-              </h3>
+              </h2>
 
               <p className="mt-3 text-sm text-neutral-400 leading-relaxed max-w-2xl">
                 {webDev.summary}
@@ -104,7 +105,7 @@ export function Services() {
             <div className="mt-8 pt-6 border-t border-[#1f1f1f]/80 flex items-center justify-between">
               <Link
                 href={`/services/${webDev.slug}`}
-                className="text-xs font-semibold text-neutral-300 group-hover:text-white transition-colors flex items-center gap-1.5 font-mono focus:outline-none"
+                className="text-xs font-semibold text-neutral-300 group-hover:text-white transition-colors flex items-center gap-1.5 font-mono"
               >
                 <span>{webDev.ctaLabel}</span>
                 <ArrowRight className="w-3.5 h-3.5 text-[#00c896]" />
@@ -117,16 +118,10 @@ export function Services() {
                 <ArrowUpRight className="w-4 h-4" />
               </Link>
             </div>
-          </motion.div>
+          </div>
 
           {/* Bento Card 2: AI Automation Setup (Compact 1-col) */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.45, delay: 0.08 }}
-            className="lg:col-span-1 group relative flex flex-col justify-between rounded-2xl border border-[#1f1f1f] bg-[#141414]/70 hover:bg-[#181818]/90 hover:border-[#00c896]/60 transition-all duration-300 backdrop-blur-md p-6 sm:p-8"
-          >
+          <div className="lg:col-span-1 group relative flex flex-col justify-between rounded-2xl border border-[#1f1f1f] bg-[#141414]/70 hover:bg-[#181818]/90 hover:border-[#00c896]/60 transition-all duration-300 backdrop-blur-md p-6 sm:p-8">
             <div className="absolute top-0 right-0 w-24 h-24 bg-[#00c896]/5 rounded-bl-full pointer-events-none group-hover:bg-[#00c896]/15 transition-colors" />
 
             <div>
@@ -137,11 +132,11 @@ export function Services() {
                 </span>
               </div>
 
-              <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-[#00c896] transition-colors leading-snug">
+              <h2 className="text-xl sm:text-2xl font-bold text-white group-hover:text-[#00c896] transition-colors leading-snug">
                 <Link href={`/services/${automation.slug}`} className="focus:outline-none">
                   {automation.title}
                 </Link>
-              </h3>
+              </h2>
 
               <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
                 {automation.summary}
@@ -165,7 +160,7 @@ export function Services() {
             <div className="mt-8 pt-6 border-t border-[#1f1f1f]/80 flex items-center justify-between">
               <Link
                 href={`/services/${automation.slug}`}
-                className="text-xs font-semibold text-neutral-300 group-hover:text-white transition-colors flex items-center gap-1.5 font-mono focus:outline-none"
+                className="text-xs font-semibold text-neutral-300 group-hover:text-white transition-colors flex items-center gap-1.5 font-mono"
               >
                 <span>{automation.ctaLabel}</span>
                 <ArrowRight className="w-3.5 h-3.5 text-[#00c896]" />
@@ -178,16 +173,10 @@ export function Services() {
                 <ArrowUpRight className="w-4 h-4" />
               </Link>
             </div>
-          </motion.div>
+          </div>
 
           {/* Bento Card 3: AI Chatbots (Compact 1-col) */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.45, delay: 0.12 }}
-            className="lg:col-span-1 group relative flex flex-col justify-between rounded-2xl border border-[#1f1f1f] bg-[#141414]/70 hover:bg-[#181818]/90 hover:border-[#00c896]/60 transition-all duration-300 backdrop-blur-md p-6 sm:p-8"
-          >
+          <div className="lg:col-span-1 group relative flex flex-col justify-between rounded-2xl border border-[#1f1f1f] bg-[#141414]/70 hover:bg-[#181818]/90 hover:border-[#00c896]/60 transition-all duration-300 backdrop-blur-md p-6 sm:p-8">
             <div className="absolute top-0 right-0 w-24 h-24 bg-[#00c896]/5 rounded-bl-full pointer-events-none group-hover:bg-[#00c896]/15 transition-colors" />
 
             <div>
@@ -202,11 +191,11 @@ export function Services() {
                 </span>
               </div>
 
-              <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-[#00c896] transition-colors leading-snug">
+              <h2 className="text-xl sm:text-2xl font-bold text-white group-hover:text-[#00c896] transition-colors leading-snug">
                 <Link href={`/services/${chatbot.slug}`} className="focus:outline-none">
                   {chatbot.title}
                 </Link>
-              </h3>
+              </h2>
 
               <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
                 {chatbot.summary}
@@ -227,7 +216,7 @@ export function Services() {
             <div className="mt-8 pt-6 border-t border-[#1f1f1f]/80 flex items-center justify-between">
               <Link
                 href={`/services/${chatbot.slug}`}
-                className="text-xs font-semibold text-neutral-300 group-hover:text-white transition-colors flex items-center gap-1.5 font-mono focus:outline-none"
+                className="text-xs font-semibold text-neutral-300 group-hover:text-white transition-colors flex items-center gap-1.5 font-mono"
               >
                 <span>{chatbot.ctaLabel}</span>
                 <ArrowRight className="w-3.5 h-3.5 text-[#00c896]" />
@@ -240,16 +229,10 @@ export function Services() {
                 <ArrowUpRight className="w-4 h-4" />
               </Link>
             </div>
-          </motion.div>
+          </div>
 
           {/* Bento Card 4: SEO & AEO (Wide 2-col) */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.45, delay: 0.16 }}
-            className="lg:col-span-2 group relative flex flex-col justify-between rounded-2xl border border-[#1f1f1f] bg-[#141414]/70 hover:bg-[#181818]/90 hover:border-[#00c896]/60 transition-all duration-300 backdrop-blur-md p-6 sm:p-8"
-          >
+          <div className="lg:col-span-2 group relative flex flex-col justify-between rounded-2xl border border-[#1f1f1f] bg-[#141414]/70 hover:bg-[#181818]/90 hover:border-[#00c896]/60 transition-all duration-300 backdrop-blur-md p-6 sm:p-8">
             <div className="absolute top-0 right-0 w-36 h-36 bg-[#00c896]/5 rounded-bl-full pointer-events-none group-hover:bg-[#00c896]/15 transition-colors" />
 
             <div>
@@ -261,11 +244,11 @@ export function Services() {
                 <span className="text-xs font-mono text-neutral-500">LLM Citations</span>
               </div>
 
-              <h3 className="text-2xl sm:text-3xl font-bold text-white group-hover:text-[#00c896] transition-colors leading-snug">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white group-hover:text-[#00c896] transition-colors leading-snug">
                 <Link href={`/services/${seo.slug}`} className="focus:outline-none">
                   {seo.title}
                 </Link>
-              </h3>
+              </h2>
 
               <p className="mt-3 text-sm text-neutral-400 leading-relaxed max-w-2xl">
                 {seo.summary}
@@ -288,7 +271,7 @@ export function Services() {
             <div className="mt-8 pt-6 border-t border-[#1f1f1f]/80 flex items-center justify-between">
               <Link
                 href={`/services/${seo.slug}`}
-                className="text-xs font-semibold text-neutral-300 group-hover:text-white transition-colors flex items-center gap-1.5 font-mono focus:outline-none"
+                className="text-xs font-semibold text-neutral-300 group-hover:text-white transition-colors flex items-center gap-1.5 font-mono"
               >
                 <span>{seo.ctaLabel}</span>
                 <ArrowRight className="w-3.5 h-3.5 text-[#00c896]" />
@@ -301,16 +284,10 @@ export function Services() {
                 <ArrowUpRight className="w-4 h-4" />
               </Link>
             </div>
-          </motion.div>
+          </div>
 
           {/* Bento Card 5: Full Brand Creation (Wide 2-col) */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.45, delay: 0.2 }}
-            className="lg:col-span-2 group relative flex flex-col justify-between rounded-2xl border border-[#1f1f1f] bg-[#141414]/70 hover:bg-[#181818]/90 hover:border-[#00c896]/60 transition-all duration-300 backdrop-blur-md p-6 sm:p-8"
-          >
+          <div className="lg:col-span-2 group relative flex flex-col justify-between rounded-2xl border border-[#1f1f1f] bg-[#141414]/70 hover:bg-[#181818]/90 hover:border-[#00c896]/60 transition-all duration-300 backdrop-blur-md p-6 sm:p-8">
             <div className="absolute top-0 right-0 w-36 h-36 bg-[#00c896]/5 rounded-bl-full pointer-events-none group-hover:bg-[#00c896]/15 transition-colors" />
 
             <div>
@@ -322,11 +299,11 @@ export function Services() {
                 <span className="text-xs font-mono text-neutral-500">Visual System</span>
               </div>
 
-              <h3 className="text-2xl sm:text-3xl font-bold text-white group-hover:text-[#00c896] transition-colors leading-snug">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white group-hover:text-[#00c896] transition-colors leading-snug">
                 <Link href={`/services/${branding.slug}`} className="focus:outline-none">
                   {branding.title}
                 </Link>
-              </h3>
+              </h2>
 
               <p className="mt-3 text-sm text-neutral-400 leading-relaxed max-w-2xl">
                 {branding.summary}
@@ -349,7 +326,7 @@ export function Services() {
             <div className="mt-8 pt-6 border-t border-[#1f1f1f]/80 flex items-center justify-between">
               <Link
                 href={`/services/${branding.slug}`}
-                className="text-xs font-semibold text-neutral-300 group-hover:text-white transition-colors flex items-center gap-1.5 font-mono focus:outline-none"
+                className="text-xs font-semibold text-neutral-300 group-hover:text-white transition-colors flex items-center gap-1.5 font-mono"
               >
                 <span>{branding.ctaLabel}</span>
                 <ArrowRight className="w-3.5 h-3.5 text-[#00c896]" />
@@ -362,16 +339,10 @@ export function Services() {
                 <ArrowUpRight className="w-4 h-4" />
               </Link>
             </div>
-          </motion.div>
+          </div>
 
           {/* Bento Card 6: Social Media Ads (Compact 1-col) */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.45, delay: 0.24 }}
-            className="lg:col-span-1 group relative flex flex-col justify-between rounded-2xl border border-[#1f1f1f] bg-[#141414]/70 hover:bg-[#181818]/90 hover:border-[#00c896]/60 transition-all duration-300 backdrop-blur-md p-6 sm:p-8"
-          >
+          <div className="lg:col-span-1 group relative flex flex-col justify-between rounded-2xl border border-[#1f1f1f] bg-[#141414]/70 hover:bg-[#181818]/90 hover:border-[#00c896]/60 transition-all duration-300 backdrop-blur-md p-6 sm:p-8">
             <div className="absolute top-0 right-0 w-24 h-24 bg-[#00c896]/5 rounded-bl-full pointer-events-none group-hover:bg-[#00c896]/15 transition-colors" />
 
             <div>
@@ -382,11 +353,11 @@ export function Services() {
                 </span>
               </div>
 
-              <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-[#00c896] transition-colors leading-snug">
+              <h2 className="text-xl sm:text-2xl font-bold text-white group-hover:text-[#00c896] transition-colors leading-snug">
                 <Link href={`/services/${ads.slug}`} className="focus:outline-none">
                   {ads.title}
                 </Link>
-              </h3>
+              </h2>
 
               <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
                 {ads.summary}
@@ -408,7 +379,7 @@ export function Services() {
             <div className="mt-8 pt-6 border-t border-[#1f1f1f]/80 flex items-center justify-between">
               <Link
                 href={`/services/${ads.slug}`}
-                className="text-xs font-semibold text-neutral-300 group-hover:text-white transition-colors flex items-center gap-1.5 font-mono focus:outline-none"
+                className="text-xs font-semibold text-neutral-300 group-hover:text-white transition-colors flex items-center gap-1.5 font-mono"
               >
                 <span>{ads.ctaLabel}</span>
                 <ArrowRight className="w-3.5 h-3.5 text-[#00c896]" />
@@ -421,45 +392,10 @@ export function Services() {
                 <ArrowUpRight className="w-4 h-4" />
               </Link>
             </div>
-          </motion.div>
-
-        </div>
-
-        {/* Executive Capabilities Directory Telemetry Banner */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-20px" }}
-          transition={{ duration: 0.45 }}
-          className="mt-14 sm:mt-16 flex flex-col md:flex-row items-center justify-between gap-6 p-6 sm:p-8 rounded-2xl border border-[#1f1f1f] bg-[#141414]/60 hover:border-[#00c896]/40 transition-colors backdrop-blur-md shadow-2xl"
-        >
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4 text-center sm:text-left">
-            <div className="w-12 h-12 rounded-xl bg-[#00c896]/10 border border-[#00c896]/30 flex items-center justify-center text-[#00c896] mx-auto sm:mx-0 shrink-0">
-              <Layers className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="flex items-center justify-center sm:justify-start gap-2">
-                <h4 className="text-base sm:text-lg font-bold text-white font-mono">
-                  Explore The Full Systems Catalog
-                </h4>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00c896] animate-pulse hidden sm:inline-block" />
-              </div>
-              <p className="text-xs sm:text-sm text-neutral-400 mt-1 max-w-xl">
-                Inspect comprehensive architecture specifications, production tech stacks, and sprint roadmaps across all 6 offerings.
-              </p>
-            </div>
           </div>
 
-          <Link
-            href="/services"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-[#00c896] hover:bg-[#00b285] text-[#040404] font-mono text-xs font-bold transition-all shadow-lg shadow-[#00c896]/20 group shrink-0"
-          >
-            <span>View Full Capabilities Directory</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </motion.div>
-
+        </div>
       </div>
-    </section>
+    </main>
   );
 }

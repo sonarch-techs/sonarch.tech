@@ -26,12 +26,12 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { name: "Services", href: "#services", tag: "Capabilities", icon: Code2 },
-  { name: "Why Choose Us", href: "#why-choose-us", tag: "Features", icon: Sparkles },
+  { name: "Services", href: "/services", tag: "Capabilities", icon: Code2 },
+  { name: "Why Choose Us", href: "/#why-choose-us", tag: "Features", icon: Sparkles },
   { name: "Case Studies", href: "/work", tag: "Production", icon: Layers },
-  { name: "Systems Architecture", href: "#systems", tag: "Pipelines", icon: Cpu },
-  { name: "Technical Insights", href: "#insights", tag: "Publications", icon: Activity },
-  { name: "Project Discovery", href: "#contact", tag: "Inbound", icon: Send },
+  { name: "Systems Architecture", href: "/#systems", tag: "Pipelines", icon: Cpu },
+  { name: "Technical Insights", href: "/insights", tag: "Publications", icon: Activity },
+  { name: "Project Discovery", href: "/#contact", tag: "Inbound", icon: Send },
 ];
 
 export function Navbar() {
