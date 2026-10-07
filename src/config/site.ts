@@ -4,6 +4,7 @@ export const siteConfig = {
   url: "https://sonarch.tech",
   navLinks: [
     { title: "Services", href: "#services" },
+    { title: "Features", href: "#why-choose-us" },
     { title: "Work", href: "#work" },
     { title: "System Design", href: "#systems" },
     { title: "Insights", href: "#insights" },

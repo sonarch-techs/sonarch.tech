@@ -1,139 +1,174 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles, Terminal, Activity, TrendingUp } from "lucide-react";
-import { BackgroundGlow } from "@/components/ui/background-glow";
-import { ArchitecturalGlobe } from "@/components/ui/architectural-globe";
-
-const METRICS = [
-  { label: "Client Conversion Lift", value: "3.4x", icon: TrendingUp },
-  { label: "Core Web Vitals Score", value: "99+", icon: Activity },
-  { label: "Systems Architecture", value: "AEO/SEO Ready", icon: Terminal },
-];
+import { ArrowRight, MoveHorizontal } from "lucide-react";
+import { Globe } from "@/components/ui/globe";
 
 export function Hero() {
-  return (
-    <section className="relative pt-2 pb-10 sm:pt-6 sm:pb-16 lg:pt-12 lg:pb-24 overflow-hidden bg-[#040404]">
-      <BackgroundGlow />
+  const scrollTo = (id: string) => {
+    const el = document.querySelector(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Main Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 lg:gap-10 items-center">
+  return (
+    <section className="relative min-h-[92vh] flex flex-col justify-between bg-transparent text-white overflow-hidden pt-8 pb-12 sm:pt-12 sm:pb-16 lg:pt-16 lg:pb-20 z-10">
+      {/* Targeted Ambient Radial Mint Glow behind Globe & Center */}
+      <div className="absolute top-1/3 right-1/4 -translate-y-1/2 w-[650px] h-[500px] bg-[#00c896]/10 blur-[160px] rounded-full pointer-events-none -z-10" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1 flex flex-col justify-center">
+        {/* Main Grid: Headline & Action Column (Left) + Globe & Telemetry (Right) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
           
-          {/* Copy Column */}
-          <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left">
+          {/* Left Column */}
+          <div className="lg:col-span-7 flex flex-col items-start text-left">
+            
             {/* Pill Badge */}
             <motion.div
-              initial={{ opacity: 0, y: -6 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35 }}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#1f1f1f] bg-[#1f1f1f]/80 text-[#00c896] text-[11px] sm:text-xs font-medium mb-3 sm:mb-4 backdrop-blur-md"
+              transition={{ duration: 0.4 }}
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#00c896]/25 bg-[#091511]/80 backdrop-blur-md mb-6"
             >
-              <Sparkles className="w-3 h-3 text-[#00c896] animate-pulse" />
-              <span>Digital Products & Autonomous Systems</span>
+              <span className="w-2 h-2 rounded-full bg-[#00c896] animate-pulse" />
+              <span className="text-xs font-medium text-neutral-300">
+                Next-Gen Systems Architecture & AEO
+              </span>
             </motion.div>
 
-            {/* Headline */}
+            {/* Headline matching image line breaks & styling */}
             <motion.h1
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.08 }}
-              className="text-2xl xs:text-3xl sm:text-4xl lg:text-[50px] xl:text-[56px] font-extrabold tracking-tight text-white leading-[1.15] max-w-2xl"
+              transition={{ duration: 0.45, delay: 0.08 }}
+              className="text-4xl sm:text-6xl lg:text-[4.15rem] xl:text-[4.65rem] font-bold tracking-tight text-white leading-[1.07]"
             >
-              We architect web apps & systems that{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#00c896] to-[#00b285]">
-                command search & conversion.
-              </span>
+              We engineer digital <br />
+              <span className="text-[#00c896]">products</span> that <br />
+              command scale.
             </motion.h1>
 
-            {/* Value Proposition */}
+            {/* Sub-headline */}
             <motion.p
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.15 }}
-              className="mt-2.5 sm:mt-4 text-xs xs:text-sm sm:text-base lg:text-lg text-neutral-400 max-w-lg font-normal leading-relaxed"
+              transition={{ duration: 0.45, delay: 0.16 }}
+              className="mt-6 text-sm sm:text-base text-neutral-400 max-w-xl leading-relaxed"
             >
-              Engineering high-performance web applications, autonomous revenue pipelines, 
-              and AI Engine Optimization (AEO) frameworks for scaling businesses.
+              SONARCHTECH architects high-performance web applications, autonomous
+              automation pipelines, and Answer Engine Optimization (AEO) frameworks that drive commercial ROI.
             </motion.p>
 
-            {/* CTAs: Side-by-side on mobile to conserve vertical space */}
-            {/* CTAs */}
+            {/* Action Buttons */}
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.22 }}
-              className="mt-4 sm:mt-6 flex flex-row items-center justify-center lg:justify-start gap-2.5 sm:gap-3.5 w-full sm:w-auto"
+              transition={{ duration: 0.45, delay: 0.24 }}
+              className="mt-8 flex flex-wrap items-center gap-4 w-full sm:w-auto"
             >
-              <a
-                href="#contact"
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="inline-flex items-center justify-center gap-1.5 bg-[#00c896] hover:bg-[#00b285] text-[#040404] font-semibold px-4 py-2.5 sm:px-6 sm:py-3 rounded-xl shadow-md shadow-[#00c896]/20 transition-all duration-200 group text-xs sm:text-sm cursor-pointer"
+              {/* Mint CTA with glowing drop shadow */}
+              <button
+                onClick={() => scrollTo("#contact")}
+                className="inline-flex items-center justify-center gap-2 bg-[#00c896] hover:bg-[#00b285] text-[#040404] font-bold text-sm px-6 py-3.5 rounded-xl shadow-[0_0_28px_rgba(0,200,150,0.32)] hover:shadow-[0_0_36px_rgba(0,200,150,0.45)] transition-all group cursor-pointer"
               >
                 <span>Book Discovery</span>
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-              </a>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
 
-              <a
-                href="#work"
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.querySelector("#work")?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="inline-flex items-center justify-center border border-[#1f1f1f] bg-[#1f1f1f]/50 hover:bg-[#1f1f1f] text-neutral-200 px-4 py-2.5 sm:px-6 sm:py-3 rounded-xl backdrop-blur-sm transition-all text-xs sm:text-sm font-medium cursor-pointer"
+              {/* Surface dark button */}
+              <button
+                onClick={() => scrollTo("#work")}
+                className="inline-flex items-center justify-center gap-2 border border-[#1f1f1f] bg-[#141414]/90 hover:bg-[#1a1a1a] text-neutral-200 font-semibold text-sm px-6 py-3.5 rounded-xl backdrop-blur-sm transition-all cursor-pointer"
               >
-                Explore Work
-              </a>
+                <span>Explore Work</span>
+              </button>
             </motion.div>
+
           </div>
 
-          {/* Globe Column */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.18 }}
-            className="lg:col-span-5 flex items-center justify-center lg:justify-end w-full my-2 sm:my-4 lg:my-0"
-          >
-            {/* Clamped mobile dimensions prevent fold-cutting */}
-            <div className="relative w-[190px] h-[190px] xs:w-[220px] xs:h-[220px] sm:w-[280px] sm:h-[280px] lg:w-[440px] lg:h-[440px] xl:w-[480px] xl:h-[480px] flex items-center justify-center">
-              <ArchitecturalGlobe />
+          {/* Right Column: Globe + Vertical "Serving Globally" Strip */}
+          <div className="lg:col-span-5 flex items-center justify-center lg:justify-end relative">
+            <div className="relative w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] lg:w-[460px] lg:h-[460px] xl:w-[500px] xl:h-[500px] flex items-center justify-center">
+              
+              {/* Globe Three.js Canvas */}
+              <Globe className="w-full h-full" />
+
+              {/* Bottom-Left: "↔ Drag to rotate" label */}
+              <div className="absolute -bottom-3 left-4 pointer-events-none select-none flex items-center gap-1.5 text-neutral-500 font-mono text-[11px] tracking-wide">
+                <MoveHorizontal className="w-3.5 h-3.5 text-neutral-400" />
+                <span>Drag to rotate</span>
+              </div>
+
+              {/* Right Margin: Vertical "SERVING GLOBALLY" Telemetry Strip */}
+              <div className="absolute -right-4 sm:-right-8 top-0 bottom-0 flex flex-col items-center justify-between py-2 pointer-events-none select-none">
+                {/* Top vertical guide line */}
+                <div className="w-[1.5px] h-16 sm:h-20 bg-gradient-to-b from-transparent via-[#00c896]/40 to-[#00c896] rounded-full" />
+
+                {/* Dark Pill Badge with Vertical Typography */}
+                <div className="bg-[#040806]/90 border border-[#00c896]/30 px-1 py-3 rounded-md shadow-[0_0_15px_rgba(0,200,150,0.15)] flex flex-col items-center font-bold tracking-widest text-white text-[10px] leading-[1.3] font-mono">
+                  <span>S</span>
+                  <span>E</span>
+                  <span>R</span>
+                  <span>V</span>
+                  <span>I</span>
+                  <span>N</span>
+                  <span>G</span>
+                  <div className="h-2" />
+                  <span>G</span>
+                  <span>L</span>
+                  <span>O</span>
+                  <span>B</span>
+                  <span>A</span>
+                  <span>L</span>
+                  <span>L</span>
+                  <span>Y</span>
+                </div>
+
+                {/* Bottom vertical guide line */}
+                <div className="w-[1.5px] h-16 sm:h-20 bg-gradient-to-t from-transparent via-[#00c896]/40 to-[#00c896] rounded-full" />
+              </div>
+
             </div>
-          </motion.div>
+          </div>
 
         </div>
 
-        {/* Compact Responsive Metrics Bar */}
+        {/* Horizontal Divider Line & Quantified Trust Metrics */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.28 }}
-          className="mt-6 sm:mt-12 w-full grid grid-cols-3 gap-2 sm:gap-4 border border-[#1f1f1f] bg-[#1f1f1f]/40 p-2.5 sm:p-4 rounded-xl sm:rounded-2xl backdrop-blur-md"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.32 }}
+          className="mt-14 sm:mt-16 lg:mt-20 pt-8 border-t border-white/[0.08] w-full"
         >
-          {METRICS.map((metric, idx) => {
-            const Icon = metric.icon;
-            return (
-              <div
-                key={idx}
-                className="flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-1.5 sm:gap-3 px-1 sm:px-3 sm:border-r border-[#1f1f1f] last:border-none"
-              >
-                <div className="p-1.5 rounded-lg bg-[#1f1f1f] border border-[#1f1f1f] text-[#00c896] shrink-0">
-                  <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                </div>
-                <div>
-                  <div className="text-sm sm:text-lg font-bold text-white tracking-tight leading-tight">
-                    {metric.value}
-                  </div>
-                  <div className="text-[10px] sm:text-xs text-neutral-400 font-medium leading-tight">
-                    {metric.label}
-                  </div>
-                </div>
+          <div className="grid grid-cols-3 max-w-lg gap-6 text-left">
+            <div>
+              <div className="text-xl sm:text-2xl font-bold text-white font-mono tracking-tight">
+                &lt;400ms
               </div>
-            );
-          })}
+              <div className="text-xs text-neutral-500 font-medium mt-1">
+                Sub-Second LCP
+              </div>
+            </div>
+
+            <div>
+              <div className="text-xl sm:text-2xl font-bold text-[#00c896] font-mono tracking-tight">
+                99.98%
+              </div>
+              <div className="text-xs text-neutral-500 font-medium mt-1">
+                Pipeline Reliability
+              </div>
+            </div>
+
+            <div>
+              <div className="text-xl sm:text-2xl font-bold text-white font-mono tracking-tight">
+                Top 1%
+              </div>
+              <div className="text-xs text-neutral-500 font-medium mt-1">
+                AEO LLM Citations
+              </div>
+            </div>
+          </div>
         </motion.div>
 
       </div>
