@@ -5,21 +5,24 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { siteConfig } from "@/config/site";
 import { FloatingWidgets } from "@/components/floating-widgets";
-
+import { GraphGridBackground } from "@/components/ui/graph-grid-background";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const inter = Inter({ 
   subsets: ["latin"],
   variable: "--font-sans",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -103,16 +106,27 @@ export default function RootLayout({
   return (
     <html 
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} dark scroll-smooth h-full`}
+      className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} dark scroll-smooth`}
+      suppressHydrationWarning
     >
       <body
-        className={`${inter.className} bg-background text-foreground antialiased min-h-screen flex flex-col overflow-x-clip selection:bg-[#00c896]/20 selection:text-[#00c896]`}
+        className={`${inter.className} font-sans bg-[#040404] text-foreground antialiased min-h-screen flex flex-col selection:bg-[#00c896]/20 selection:text-[#00c896] overflow-x-clip relative`}
       >
+        {/* 1. Global Architectural Coordinate Grid (Fixed Background at z-0) */}
+        <GraphGridBackground />
+
+        {/* 2. Floating Obsidian Header (Fixed at z-40) */}
         <Navbar />
-        <main className="flex-grow pt-16 sm:pt-20 lg:pt-24 overflow-x-clip">
+
+        {/* 3. Primary Content Stream (Layered at z-10 with zero artificial offset) */}
+        <main className="relative sm:pt-12 lg:pt-18  z-10 flex-grow flex flex-col w-full overflow-x-clip">
           {children}
         </main>
+
+        {/* 4. Global Footer */}
         <Footer />
+
+        {/* 5. Floating Telemetry Widgets (WhatsApp & AI Chatbot at z-50) */}
         <FloatingWidgets />
       </body>
     </html>

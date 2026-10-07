@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Send, Bot, CheckCircle2, Sparkles } from "lucide-react";
+import { X, Send, Bot, CheckCircle2, Sparkles, MessageCircle, Mail, ArrowUpRight } from "lucide-react";
 
 interface StructuredMessage {
   id: string;
@@ -22,15 +22,15 @@ export function FloatingWidgets() {
       id: "initial",
       role: "assistant",
       message:
-        "Welcome to SONARCHTECH. We architect high-performance web applications, autonomous automation pipelines, and Answer Engine Optimization (AEO). How can I assist in scoping your project?",
+        "Hey! I'm Sonar from SONARCHTECH. Tell me about your project idea, or ask how we can bring it to life.",
       keyPoints: [
-        "Sub-second LCP architectures",
-        "Tailored full-stack engineering",
+        "High-level project roadmaps",
+        "Fast Next.js & mobile delivery",
       ],
       suggestedReplies: [
-        "What tech stack do you use?",
-        "How fast can you deliver?",
-        "Scope a custom project",
+        "I have a web app idea",
+        "How fast can you build it?",
+        "What are your contact details?",
       ],
     },
   ]);
@@ -95,7 +95,7 @@ export function FloatingWidgets() {
         {
           id: (Date.now() + 1).toString(),
           role: "assistant",
-          message: data.message || "I am here to assist with your project scope.",
+          message: data.message || "I'm here to help plan your project. What would you like to build?",
           keyPoints: Array.isArray(data.keyPoints) ? data.keyPoints : [],
           suggestedReplies: Array.isArray(data.suggestedReplies) ? data.suggestedReplies : [],
         },
@@ -106,8 +106,8 @@ export function FloatingWidgets() {
         {
           id: (Date.now() + 1).toString(),
           role: "assistant",
-          message: err.message || "Temporary latency encountered. Please reach out via WhatsApp.",
-          suggestedReplies: ["Connect on WhatsApp"],
+          message: err.message || "Something went wrong! You can reach us directly on WhatsApp or book a discovery call.",
+          suggestedReplies: ["Open WhatsApp", "Book discovery"],
         },
       ]);
     } finally {
@@ -118,6 +118,14 @@ export function FloatingWidgets() {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     sendMessage(input);
+  };
+
+  const scrollToContact = () => {
+    setIsOpen(false);
+    const element = document.querySelector("#contact");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
@@ -131,7 +139,7 @@ export function FloatingWidgets() {
           onMouseEnter={() => setIsBotHovered(true)}
           onMouseLeave={() => setIsBotHovered(false)}
         >
-          {/* Animated Hover Pill in Palette */}
+          {/* Animated Hover Pill */}
           <AnimatePresence>
             {isBotHovered && !isOpen && (
               <motion.div
@@ -158,7 +166,7 @@ export function FloatingWidgets() {
           {/* Chatbot Circular Trigger Button */}
           <button
             onClick={() => setIsOpen(true)}
-            aria-label="Open AI Architect"
+            aria-label="Open AI Web Bot"
             className="w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-[#040404] hover:bg-[#1f1f1f] border border-[#1f1f1f] hover:border-[#00c896]/60 shadow-xl shadow-black/70 flex items-center justify-center transition-all group cursor-pointer"
           >
             <Bot className="w-6 h-6 text-neutral-200 group-hover:text-[#00c896] transition-colors" />
@@ -182,12 +190,12 @@ export function FloatingWidgets() {
         </a>
       </div>
 
-      {/* 2. Chat Modal with Blurred Obsidian Backdrop */}
+      {/* 2. Chat Modal with Blurred Backdrop */}
       <AnimatePresence>
         {isOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
             
-            {/* Blurred Dark Backdrop */}
+            {/* Blurred Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -202,7 +210,7 @@ export function FloatingWidgets() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 15 }}
               transition={{ duration: 0.22 }}
-              className="relative w-full max-w-[440px] h-[600px] bg-[#040404] border border-[#1f1f1f] rounded-3xl shadow-2xl shadow-black flex flex-col justify-between overflow-hidden z-10"
+              className="relative w-full max-w-[430px] h-[580px] bg-[#040404] border border-[#1f1f1f] rounded-3xl shadow-2xl shadow-black flex flex-col justify-between overflow-hidden z-10"
             >
               {/* Header */}
               <div className="px-5 py-4 border-b border-[#1f1f1f] flex items-center justify-between bg-[#1f1f1f]/30">
@@ -213,12 +221,12 @@ export function FloatingWidgets() {
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="text-sm font-bold tracking-wider text-white font-mono">
-                        SONARCH<span className="text-[#00c896]">TECH</span>
+                        SONAR <span className="text-[#00c896]">BOT</span>
                       </h3>
                       <span className="w-1.5 h-1.5 rounded-full bg-[#00c896] animate-pulse" />
                     </div>
                     <p className="text-[10px] font-mono text-neutral-400">
-                      AI Project Strategist
+                      SONARCHTECH Assistant
                     </p>
                   </div>
                 </div>
@@ -226,13 +234,22 @@ export function FloatingWidgets() {
                 <button
                   onClick={() => setIsOpen(false)}
                   className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-[#1f1f1f] transition-colors cursor-pointer"
+                  aria-label="Close chat"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              {/* Messages Body */}
-              <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 text-xs font-mono">
+              {/* Messages Body with Custom Color-Palette Scrollbar */}
+              <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 text-xs font-mono 
+                [scrollbar-width:thin] 
+                [scrollbar-color:#1f1f1f_transparent] 
+                [&::-webkit-scrollbar]:w-1.5 
+                [&::-webkit-scrollbar-track]:bg-transparent 
+                [&::-webkit-scrollbar-thumb]:bg-[#1f1f1f] 
+                hover:[&::-webkit-scrollbar-thumb]:bg-[#00c896]/70 
+                [&::-webkit-scrollbar-thumb]:rounded-full"
+              >
                 {messages.map((msg) => (
                   <div
                     key={msg.id}
@@ -242,13 +259,13 @@ export function FloatingWidgets() {
                     <div
                       className={`max-w-[88%] rounded-2xl px-4 py-3 leading-relaxed ${
                         msg.role === "user"
-                          ? "bg-[#00c896] text-[#040404] font-semibold rounded-br-sm shadow-lg shadow-[#00c896]/10"
+                          ? "bg-[#00c896] text-[#040404] font-semibold rounded-br-sm shadow-md shadow-[#00c896]/10"
                           : "bg-[#1f1f1f]/50 text-neutral-200 border border-[#1f1f1f] rounded-bl-sm"
                       }`}
                     >
                       {msg.message}
 
-                      {/* Structured JSON: Key Points (if available) */}
+                      {/* Structured JSON: Key Points / Overviews */}
                       {msg.keyPoints && msg.keyPoints.length > 0 && (
                         <div className="mt-3 pt-2.5 border-t border-[#1f1f1f] space-y-1.5">
                           {msg.keyPoints.map((point, i) => (
@@ -259,9 +276,34 @@ export function FloatingWidgets() {
                           ))}
                         </div>
                       )}
+
+                      {/* Explicit Contact Shortcut Buttons if Contact is Mentioned */}
+                      {msg.role === "assistant" &&
+                        (msg.message.toLowerCase().includes("whatsapp") ||
+                          msg.message.toLowerCase().includes("email") ||
+                          msg.message.toLowerCase().includes("team@sonarchtech.com")) && (
+                          <div className="mt-3 pt-2.5 border-t border-[#1f1f1f] flex flex-wrap gap-2">
+                            <a
+                              href={whatsappUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#25D366]/10 border border-[#25D366]/30 text-[#25D366] text-[11px] font-semibold hover:bg-[#25D366]/20 transition-colors"
+                            >
+                              <MessageCircle className="w-3 h-3" />
+                              <span>WhatsApp Us</span>
+                            </a>
+                            <button
+                              onClick={scrollToContact}
+                              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#00c896]/10 border border-[#00c896]/30 text-[#00c896] text-[11px] font-semibold hover:bg-[#00c896]/20 transition-colors cursor-pointer"
+                            >
+                              <ArrowUpRight className="w-3 h-3" />
+                              <span>Discovery Form</span>
+                            </button>
+                          </div>
+                        )}
                     </div>
 
-                    {/* Structured JSON: Quick Interactive Follow-Up Chips */}
+                    {/* Quick Interactive Follow-Up Chips */}
                     {msg.role === "assistant" && msg.suggestedReplies && msg.suggestedReplies.length > 0 && (
                       <div className="mt-2.5 flex flex-wrap gap-1.5 max-w-[90%]">
                         {msg.suggestedReplies.map((chip, idx) => (
@@ -280,17 +322,17 @@ export function FloatingWidgets() {
                   </div>
                 ))}
 
-                {/* Sleek Telemetry Wave Loading Animation */}
+                {/* Friendly Web Bot Typing Animation */}
                 {isLoading && (
                   <div className="flex items-start gap-2">
-                    <div className="bg-[#1f1f1f]/50 border border-[#1f1f1f] rounded-2xl rounded-bl-sm px-4 py-3 flex items-center gap-3">
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-[#00c896] animate-bounce [animation-delay:-0.3s]" />
-                        <span className="w-2 h-2 rounded-full bg-[#00c896] animate-bounce [animation-delay:-0.15s]" />
-                        <span className="w-2 h-2 rounded-full bg-[#00c896] animate-bounce" />
+                    <div className="bg-[#1f1f1f]/50 border border-[#1f1f1f] rounded-2xl rounded-bl-sm px-4 py-3 flex items-center gap-2.5">
+                      <div className="flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#00c896] animate-bounce [animation-delay:-0.3s]" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#00c896] animate-bounce [animation-delay:-0.15s]" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#00c896] animate-bounce" />
                       </div>
                       <span className="text-[11px] text-neutral-400 font-mono">
-                        Synthesizing architecture...
+                        Sonar is thinking...
                       </span>
                     </div>
                   </div>
@@ -309,7 +351,7 @@ export function FloatingWidgets() {
                       type="text"
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
-                      placeholder="Ask project requirements, tech stack..."
+                      placeholder="Ask about your project idea..."
                       maxLength={300}
                       disabled={isLoading}
                       className="w-full bg-[#1f1f1f]/50 border border-[#1f1f1f] rounded-full px-4 py-2.5 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-[#00c896]/60 transition-colors font-mono"
@@ -320,13 +362,14 @@ export function FloatingWidgets() {
                     type="submit"
                     disabled={!input.trim() || isLoading}
                     className="w-10 h-10 rounded-full bg-[#00c896] hover:bg-[#00b285] disabled:opacity-30 text-[#040404] font-bold flex items-center justify-center transition-all shrink-0 cursor-pointer shadow-lg shadow-[#00c896]/20"
+                    aria-label="Send message"
                   >
                     <Send className="w-4 h-4" />
                   </button>
                 </form>
 
                 <p className="text-[10px] font-mono text-center text-neutral-500 mt-2.5">
-                  SONARCHTECH AI Assistant // Confidential
+                  SONARCHTECH Web Concierge
                 </p>
               </div>
             </motion.div>
