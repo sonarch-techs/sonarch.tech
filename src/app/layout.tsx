@@ -8,6 +8,7 @@ import { FloatingWidgets } from "@/components/floating-widgets";
 import { GraphGridBackground } from "@/components/ui/graph-grid-background";
 import { TelemetryStatusBar } from "@/components/telemetry-status-bar";
 import { CommandMenu } from "@/components/command-menu";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -114,6 +115,12 @@ export default function RootLayout({
       <body
         className={`${inter.className} font-sans bg-[#040404] text-foreground antialiased min-h-screen flex flex-col selection:bg-[#00c896]/20 selection:text-[#00c896] overflow-x-clip relative`}
       >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange={false}
+        >
         {/* 1. Global Architectural Coordinate Grid (Fixed Background at z-0) */}
         <GraphGridBackground />
 
@@ -132,6 +139,7 @@ export default function RootLayout({
         {/* 5. Floating Telemetry Widgets (WhatsApp & AI Chatbot at z-50) */}
         <FloatingWidgets />
         <CommandMenu />
+      </ThemeProvider>
       </body>
     </html>
   );

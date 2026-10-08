@@ -15,13 +15,70 @@ export function Globe({ className = "" }: GlobeProps) {
     const mount = mountRef.current;
     if (!mount) return;
 
-    // Flush any stale DOM nodes inside mount to prevent WebGL context collision
+    // Flush stale DOM nodes inside mount to prevent WebGL context collision
     while (mount.firstChild) {
       mount.removeChild(mount.firstChild);
     }
 
     const width = mount.clientWidth || 500;
     const height = mount.clientHeight || 500;
+    const isDarkInitial = document.documentElement.classList.contains("dark");
+
+    // Palette Configurations
+    const PALETTE = {
+      // 1. Color-Locked Dark Theme
+      dark: {
+        ocean: 0x040404,        // Obsidian
+        land: 0x00c896,         // Electric Mint
+        core: 0x040404,
+        rim: 0xffffff,
+        rimOpacity: 0.55,
+        atmoColor: 0x00c896,
+        atmoIntensity: 0.32,
+        atmoPower: 2.8,
+        gridColor: 0x222222,
+        gridOpacity: 0.45,
+        geodesic: 0x00c896,
+        geodesicOpacity: 0.1,
+        beacons: 0x00c896,
+        arcs: 0x00c896,
+        arcOpacity: 0.32,
+        packets: 0x5eead4,
+        layers: [
+          { color: 0x00c896, opacity: 0.28, trackOpacity: 0.2 }, // Mint
+          { color: 0x38bdf8, opacity: 0.28, trackOpacity: 0.2 }, // Cyan
+          { color: 0x008c69, opacity: 0.28, trackOpacity: 0.2 }, // Electric Mint Variant
+          { color: 0x00fff0, opacity: 0.28, trackOpacity: 0.2 }, // Cobalt
+        ],
+      },
+      // 2. Executive Architectural Light Theme
+      light: {
+        ocean: 0xf4f3ee,        // Warm Whitesmoke / Fine Wheat Alabaster
+        land: 0x008763,         // Technical Emerald (#008763)
+        core: 0xf4f3ee,
+        rim: 0x008763,
+        rimOpacity: 0.28,
+        atmoColor: 0x008763,
+        atmoIntensity: 0.14,
+        atmoPower: 2.5,
+        gridColor: 0xd4d2ca,    // Subtle Architectural Pencil Drafting Line
+        gridOpacity: 0.45,
+        geodesic: 0x008763,
+        geodesicOpacity: 0.08,
+        beacons: 0x008763,
+        arcs: 0x008763,
+        arcOpacity: 0.35,
+        packets: 0x005c43,      // Deep Forest Emerald Gliding Data Packet
+        layers: [
+          { color: 0x008763, opacity: 0.28, trackOpacity: 0.2 },  // Technical Emerald
+          { color: 0x005c43, opacity: 0.28, trackOpacity: 0.2 },  // Deep Forest Emerald
+          { color: 0x2d6a4f, opacity: 0.28, trackOpacity: 0.2 },  // Muted Pine
+          { color: 0x40916c, opacity: 0.28, trackOpacity: 0.2 },  // Sage Mineral
+        ],
+      },
+    };
+
+    const currentPalette = isDarkInitial ? PALETTE.dark : PALETTE.light;
 
     // 1. Scene, Camera, High-Precision WebGL Renderer
     const scene = new THREE.Scene();
@@ -37,27 +94,26 @@ export function Globe({ className = "" }: GlobeProps) {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     mount.appendChild(renderer.domElement);
 
-    // Root group that responds to user drag/swipe inertia
     const rootGroup = new THREE.Group();
     scene.add(rootGroup);
 
     const radius = 82;
 
-    // 2. Solid Obsidian Inner Core (Blocks back-facing elements naturally)
+    // 2. Solid Inner Core Sphere
     const coreGeo = new THREE.SphereGeometry(radius * 0.985, 48, 48);
     const coreMat = new THREE.MeshBasicMaterial({
-      color: 0x040404,
+      color: currentPalette.core,
       transparent: false,
     });
     const coreMesh = new THREE.Mesh(coreGeo, coreMat);
     rootGroup.add(coreMesh);
 
-    // 3. Crisp Camera-Facing Planetary Silhouette Rim
+    // 3. Camera-Facing Planetary Silhouette Rim
     const rimGeo = new THREE.RingGeometry(radius * 1.006, radius * 1.018, 128);
     const rimMat = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
+      color: currentPalette.rim,
       transparent: true,
-      opacity: 0.55,
+      opacity: currentPalette.rimOpacity,
       side: THREE.DoubleSide,
     });
     const rimMesh = new THREE.Mesh(rimGeo, rimMat);
@@ -67,8 +123,13 @@ export function Globe({ className = "" }: GlobeProps) {
     const atmosphereGeo = new THREE.SphereGeometry(radius * 1.025, 48, 48);
     const atmosphereMat = new THREE.ShaderMaterial({
       transparent: true,
-      blending: THREE.AdditiveBlending,
+      blending: isDarkInitial ? THREE.AdditiveBlending : THREE.NormalBlending,
       side: THREE.BackSide,
+      uniforms: {
+        uColor: { value: new THREE.Color(currentPalette.atmoColor) },
+        uPower: { value: currentPalette.atmoPower },
+        uIntensity: { value: currentPalette.atmoIntensity },
+      },
       vertexShader: `
         varying vec3 vNormal;
         varying vec3 vPosition;
@@ -79,40 +140,76 @@ export function Globe({ className = "" }: GlobeProps) {
         }
       `,
       fragmentShader: `
+        uniform vec3 uColor;
+        uniform float uPower;
+        uniform float uIntensity;
+
         varying vec3 vNormal;
         varying vec3 vPosition;
         void main() {
           vec3 viewDir = normalize(-vPosition);
           float rim = 1.0 - max(dot(viewDir, vNormal), 0.0);
-          rim = pow(rim, 2.8);
-          gl_FragColor = vec4(0.0, 0.784, 0.588, rim * 0.32);
+          rim = pow(rim, uPower);
+          gl_FragColor = vec4(uColor, rim * uIntensity);
         }
       `,
     });
     const atmosphereMesh = new THREE.Mesh(atmosphereGeo, atmosphereMat);
     rootGroup.add(atmosphereMesh);
 
-    // 5. World Continents Map Layer (/public/world-map.png)
+    // 5. Masked Continent & Ocean Shader (World Map Mask)
+    const defaultPlaceholderTex = new THREE.DataTexture(
+      new Uint8Array([0, 0, 0, 255]),
+      1,
+      1
+    );
+    defaultPlaceholderTex.needsUpdate = true;
+
+    const mapGeo = new THREE.SphereGeometry(radius, 64, 64);
+    const mapMat = new THREE.ShaderMaterial({
+      transparent: false,
+      uniforms: {
+        uMap: { value: defaultPlaceholderTex },
+        uOceanColor: { value: new THREE.Color(currentPalette.ocean) },
+        uLandColor: { value: new THREE.Color(currentPalette.land) },
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform sampler2D uMap;
+        uniform vec3 uOceanColor;
+        uniform vec3 uLandColor;
+        varying vec2 vUv;
+
+        void main() {
+          vec4 texColor = texture2D(uMap, vUv);
+          // Red channel defines continents (1.0) vs oceans (0.0)
+          float isLand = smoothstep(0.2, 0.55, texColor.r);
+          vec3 finalColor = mix(uOceanColor, uLandColor, isLand);
+          gl_FragColor = vec4(finalColor, 1.0);
+        }
+      `,
+    });
+
+    const mapMesh = new THREE.Mesh(mapGeo, mapMat);
+    rootGroup.add(mapMesh);
+
     const textureLoader = new THREE.TextureLoader();
     let mapTexture: THREE.Texture | null = null;
+
     textureLoader.load(
       "/world-map.png",
       (texture) => {
         mapTexture = texture;
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.ClampToEdgeWrapping;
-
-        const mapGeo = new THREE.SphereGeometry(radius, 64, 64);
-        const mapMat = new THREE.MeshBasicMaterial({
-          map: texture,
-          color: 0x00c896, // Mint continental vector glow
-          transparent: true,
-          opacity: 0.88,
-          blending: THREE.AdditiveBlending,
-        });
-
-        const mapMesh = new THREE.Mesh(mapGeo, mapMat);
-        rootGroup.add(mapMesh);
+        mapMat.uniforms.uMap.value = texture;
+        mapMat.needsUpdate = true;
         setIsLoaded(true);
       },
       undefined,
@@ -122,10 +219,10 @@ export function Globe({ className = "" }: GlobeProps) {
     // 6. Architectural Latitude & Longitude Wireframe Grid
     const latLongGeo = new THREE.SphereGeometry(radius * 1.002, 24, 16);
     const latLongMat = new THREE.MeshBasicMaterial({
-      color: 0x222222,
+      color: currentPalette.gridColor,
       wireframe: true,
       transparent: true,
-      opacity: 0.45,
+      opacity: currentPalette.gridOpacity,
     });
     const latLongMesh = new THREE.Mesh(latLongGeo, latLongMat);
     rootGroup.add(latLongMesh);
@@ -133,10 +230,10 @@ export function Globe({ className = "" }: GlobeProps) {
     // 7. Geodesic Icosahedron Structural Facet Shell
     const geodesicGeo = new THREE.IcosahedronGeometry(radius * 1.012, 2);
     const geodesicMat = new THREE.MeshBasicMaterial({
-      color: 0x00c896,
+      color: currentPalette.geodesic,
       wireframe: true,
       transparent: true,
-      opacity: 0.1,
+      opacity: currentPalette.geodesicOpacity,
     });
     const geodesicMesh = new THREE.Mesh(geodesicGeo, geodesicMat);
     rootGroup.add(geodesicMesh);
@@ -162,7 +259,9 @@ export function Globe({ className = "" }: GlobeProps) {
 
     const hubVectors = hubCoordinates.map((h) => toVector3(h.lat, h.lon, radius * 1.004));
     const beaconGeo = new THREE.SphereGeometry(1.4, 12, 12);
-    const beaconMat = new THREE.MeshBasicMaterial({ color: 0x00c896 });
+    const beaconMat = new THREE.MeshBasicMaterial({
+      color: currentPalette.beacons,
+    });
 
     hubVectors.forEach((pos) => {
       const beacon = new THREE.Mesh(beaconGeo, beaconMat);
@@ -181,6 +280,7 @@ export function Globe({ className = "" }: GlobeProps) {
 
     const arcCurves: THREE.QuadraticBezierCurve3[] = [];
     const arcLines: THREE.Line[] = [];
+    const arcLineMats: THREE.LineBasicMaterial[] = [];
 
     arcConnections.forEach(([i, j]) => {
       const start = hubVectors[i];
@@ -195,82 +295,85 @@ export function Globe({ className = "" }: GlobeProps) {
       const points = curve.getPoints(40);
       const curveGeo = new THREE.BufferGeometry().setFromPoints(points);
       const curveMat = new THREE.LineBasicMaterial({
-        color: 0x00c896,
+        color: currentPalette.arcs,
         transparent: true,
-        opacity: 0.32,
+        opacity: currentPalette.arcOpacity,
       });
+      arcLineMats.push(curveMat);
+
       const line = new THREE.Line(curveGeo, curveMat);
       arcLines.push(line);
       rootGroup.add(line);
     });
 
     const packetGeo = new THREE.SphereGeometry(1.3, 8, 8);
-    const packetMat = new THREE.MeshBasicMaterial({ color: 0x5eead4 });
+    const packetMat = new THREE.MeshBasicMaterial({
+      color: currentPalette.packets,
+    });
     const arcPackets = arcCurves.map(() => {
       const packet = new THREE.Mesh(packetGeo, packetMat);
       rootGroup.add(packet);
       return packet;
     });
 
-    // 10. MULTI-LAYER ORBITAL SATELLITE ENGINE
-    // Each layer has its own orbital plane, speed, and uniform color across all its nodes
+    // 10. Multi-Layer Orbital Satellite Engine
     interface OrbitalLayer {
       rotator: THREE.Group;
       speed: number;
     }
 
+    interface LayerMaterialRef {
+      trackMat: THREE.LineBasicMaterial;
+      particleMat: THREE.MeshBasicMaterial;
+      haloMat: THREE.MeshBasicMaterial;
+      layerIndex: number;
+    }
+
     const orbitalLayers: OrbitalLayer[] = [];
+    const layerMaterialRefs: LayerMaterialRef[] = [];
     const layerDisposables: { geo: THREE.BufferGeometry; mat: THREE.Material }[] = [];
 
     const layerConfigs = [
       {
-        name: "Layer 1 - Mint",
         radius: radius * 1.06,
         tiltX: 0.28,
         tiltZ: 0.12,
         speed: 0.012,
-        colorHex: 0x00c896, // Electric Mint
         dotCount: 5,
         dotSize: 2.1,
       },
       {
-        name: "Layer 2 - Cyan",
         radius: radius * 1.11,
         tiltX: 0.76,
         tiltZ: -0.42,
         speed: -0.009,
-        colorHex: 0x38bdf8, // Sky Cyan
         dotCount: 4,
         dotSize: 2.3,
       },
       {
-        name: "Layer 3 - Purple",
         radius: radius * 1.16,
         tiltX: -0.82,
         tiltZ: 0.68,
         speed: 0.008,
-        colorHex: 0x008c69, // electric mint
         dotCount: 4,
         dotSize: 2.2,
       },
       {
-        name: "Layer 4 - Royal Blue",
         radius: radius * 1.21,
         tiltX: -0.32,
         tiltZ: -0.84,
         speed: -0.007,
-        colorHex: 0x00fff0, // Cobalt Blue
         dotCount: 4,
         dotSize: 2.4,
       },
     ];
 
-    layerConfigs.forEach((cfg) => {
-      // 1. Orbital Plane Group
+    layerConfigs.forEach((cfg, idx) => {
+      const layerPalette = currentPalette.layers[idx];
+
       const planeGroup = new THREE.Group();
       planeGroup.rotation.set(cfg.tiltX, 0, cfg.tiltZ);
 
-      // 2. Blueprint Orbital Guide Track
       const trackSegments = 96;
       const trackPoints: THREE.Vector3[] = [];
       for (let i = 0; i <= trackSegments; i++) {
@@ -285,25 +388,32 @@ export function Globe({ className = "" }: GlobeProps) {
       }
       const trackGeo = new THREE.BufferGeometry().setFromPoints(trackPoints);
       const trackMat = new THREE.LineBasicMaterial({
-        color: cfg.colorHex,
+        color: layerPalette.color,
         transparent: true,
-        opacity: 0.2,
+        opacity: layerPalette.trackOpacity,
       });
       planeGroup.add(new THREE.Line(trackGeo, trackMat));
       layerDisposables.push({ geo: trackGeo, mat: trackMat });
 
-      // 3. Rotator Group
       const layerRotator = new THREE.Group();
-
       const particleGeo = new THREE.SphereGeometry(cfg.dotSize, 14, 14);
-      const particleMat = new THREE.MeshBasicMaterial({ color: cfg.colorHex });
+      const particleMat = new THREE.MeshBasicMaterial({
+        color: layerPalette.color,
+      });
 
       const haloGeo = new THREE.SphereGeometry(cfg.dotSize * 1.8, 14, 14);
       const haloMat = new THREE.MeshBasicMaterial({
-        color: cfg.colorHex,
+        color: layerPalette.color,
         transparent: true,
-        opacity: 0.28,
-        blending: THREE.AdditiveBlending,
+        opacity: layerPalette.opacity,
+        blending: isDarkInitial ? THREE.AdditiveBlending : THREE.NormalBlending,
+      });
+
+      layerMaterialRefs.push({
+        trackMat,
+        particleMat,
+        haloMat,
+        layerIndex: idx,
       });
 
       layerDisposables.push(
@@ -322,17 +432,79 @@ export function Globe({ className = "" }: GlobeProps) {
 
         const haloMesh = new THREE.Mesh(haloGeo, haloMat);
         particleMesh.add(haloMesh);
-
         layerRotator.add(particleMesh);
       }
 
       planeGroup.add(layerRotator);
       rootGroup.add(planeGroup);
-
       orbitalLayers.push({ rotator: layerRotator, speed: cfg.speed });
     });
 
-    // 11. Interactive Drag / Swipe Dynamics
+    // 11. Real-Time Dynamic Theme Sync
+    const applyTheme = (isDark: boolean) => {
+      const palette = isDark ? PALETTE.dark : PALETTE.light;
+
+      // Core Sphere
+      coreMat.color.setHex(palette.core);
+
+      // Continent & Ocean Mask Shader
+      mapMat.uniforms.uOceanColor.value.setHex(palette.ocean);
+      mapMat.uniforms.uLandColor.value.setHex(palette.land);
+      mapMat.needsUpdate = true;
+
+      // Silhouette Rim
+      rimMat.color.setHex(palette.rim);
+      rimMat.opacity = palette.rimOpacity;
+
+      // Atmospheric Glow
+      atmosphereMat.uniforms.uColor.value.setHex(palette.atmoColor);
+      atmosphereMat.uniforms.uPower.value = palette.atmoPower;
+      atmosphereMat.uniforms.uIntensity.value = palette.atmoIntensity;
+      atmosphereMat.blending = isDark ? THREE.AdditiveBlending : THREE.NormalBlending;
+      atmosphereMat.needsUpdate = true;
+
+      // Latitude/Longitude Blueprint Lines
+      latLongMat.color.setHex(palette.gridColor);
+      latLongMat.opacity = palette.gridOpacity;
+
+      // Geodesic Shell
+      geodesicMat.color.setHex(palette.geodesic);
+      geodesicMat.opacity = palette.geodesicOpacity;
+
+      // Infrastructure Beacons
+      beaconMat.color.setHex(palette.beacons);
+
+      // Trajectory Arcs & Packets
+      arcLineMats.forEach((mat) => {
+        mat.color.setHex(palette.arcs);
+        mat.opacity = palette.arcOpacity;
+      });
+      packetMat.color.setHex(palette.packets);
+
+      // Orbital Satellites / Particles
+      layerMaterialRefs.forEach(({ trackMat, particleMat, haloMat, layerIndex }) => {
+        const lp = palette.layers[layerIndex];
+        trackMat.color.setHex(lp.color);
+        trackMat.opacity = lp.trackOpacity;
+        particleMat.color.setHex(lp.color);
+        haloMat.color.setHex(lp.color);
+        haloMat.blending = isDark ? THREE.AdditiveBlending : THREE.NormalBlending;
+        haloMat.opacity = lp.opacity;
+        haloMat.needsUpdate = true;
+      });
+    };
+
+    // Watch for theme toggles on <html class="dark | ...">
+    const themeObserver = new MutationObserver(() => {
+      const isDark = document.documentElement.classList.contains("dark");
+      applyTheme(isDark);
+    });
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    // 12. Interactive Drag / Swipe Dynamics
     let isDragging = false;
     let prevMouseX = 0;
     let prevMouseY = 0;
@@ -405,14 +577,13 @@ export function Globe({ className = "" }: GlobeProps) {
     const resizeObserver = new ResizeObserver(() => handleResize());
     resizeObserver.observe(mount);
 
-    // 12. Deprecation-Free Animation Loop (No THREE.Clock, No NaN on bootstrap)
+    // 13. Animation Loop
     let animationFrameId: number;
 
     const animate = (time: number) => {
       animationFrameId = requestAnimationFrame(animate);
       const elapsed = (time || performance.now()) * 0.001;
 
-      // Idle planet rotation with drag inertia damping
       if (!isDragging) {
         rootGroup.rotation.y += 0.0016;
         velocityX *= 0.95;
@@ -421,12 +592,10 @@ export function Globe({ className = "" }: GlobeProps) {
         rootGroup.rotation.x += velocityY;
       }
 
-      // Revolve each orbital layer around its exclusive plane
       for (let i = 0; i < orbitalLayers.length; i++) {
         orbitalLayers[i].rotator.rotation.y += orbitalLayers[i].speed;
       }
 
-      // Slide data packets across global trajectory arcs
       arcPackets.forEach((packet, idx) => {
         const t = (elapsed * 0.35 + idx * 0.2) % 1;
         const pos = arcCurves[idx].getPoint(t);
@@ -436,13 +605,14 @@ export function Globe({ className = "" }: GlobeProps) {
       renderer.render(scene, camera);
     };
 
-    // Bootstrap loop using high-precision browser timestamp
     animationFrameId = requestAnimationFrame(animate);
 
-    // Clean teardown preventing React/Turbopack memory leaks
+    // Teardown & Memory Cleanup
     return () => {
       cancelAnimationFrame(animationFrameId);
+      themeObserver.disconnect();
       resizeObserver.disconnect();
+
       domElement.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
@@ -453,6 +623,8 @@ export function Globe({ className = "" }: GlobeProps) {
       renderer.dispose();
       coreGeo.dispose();
       coreMat.dispose();
+      mapGeo.dispose();
+      mapMat.dispose();
       rimGeo.dispose();
       rimMat.dispose();
       atmosphereGeo.dispose();
@@ -466,9 +638,8 @@ export function Globe({ className = "" }: GlobeProps) {
       packetGeo.dispose();
       packetMat.dispose();
 
-      if (mapTexture) {
-        mapTexture.dispose();
-      }
+      if (mapTexture) mapTexture.dispose();
+      defaultPlaceholderTex.dispose();
 
       arcLines.forEach((line) => {
         line.geometry.dispose();
@@ -487,14 +658,21 @@ export function Globe({ className = "" }: GlobeProps) {
   }, []);
 
   return (
-    <div className={`relative flex items-center justify-center cursor-grab active:cursor-grabbing ${className}`}>
-      {/* Three.js exclusive canvas mount */}
+    <div
+      className={`relative flex items-center justify-center cursor-grab active:cursor-grabbing ${className}`}
+    >
       <div ref={mountRef} className="w-full h-full" />
 
-      {/* Loading state isolated outside canvas mount */}
+      {/* Hydration-safe loading spinner */}
       {!isLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-10 h-10 rounded-full border border-[#1f1f1f] border-t-[#00c896] animate-spin" />
+        <div
+          suppressHydrationWarning
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        >
+          <div
+            suppressHydrationWarning
+            className="w-10 h-10 rounded-full border border-neutral-300 dark:border-[#1f1f1f] border-t-[#008763] dark:border-t-[#00c896] animate-spin"
+          />
         </div>
       )}
     </div>

@@ -62,27 +62,27 @@ const PROTOCOL_STEPS = [
 export function SystemsWorkflow() {
   return (
     <section
-  id="systems"
-  className="relative py-20 sm:py-28 bg-transparent text-white overflow-hidden scroll-mt-20 lg:scroll-mt-24 z-10"
->
+      id="systems"
+      className="relative py-20 sm:py-28 bg-transparent text-neutral-900 dark:text-white overflow-hidden scroll-mt-20 lg:scroll-mt-24 z-10 transition-colors duration-200"
+    >
       {/* Ambient background bloom */}
-      <div className="absolute top-1/2 right-1/4 w-[500px] h-[300px] bg-[#00c896]/5 blur-[140px] rounded-full pointer-events-none -z-10" />
+      <div className="absolute top-1/2 right-1/4 w-[500px] h-[300px] bg-[#008763]/[0.05] dark:bg-[#00c896]/5 blur-[140px] rounded-full pointer-events-none -z-10" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#1f1f1f] bg-[#1f1f1f]/80 text-[#00c896] text-xs font-semibold uppercase tracking-wider mb-4">
-            <Cpu className="w-3.5 h-3.5 text-[#00c896]" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-neutral-200 dark:border-[#1f1f1f] bg-white/80 dark:bg-[#1f1f1f]/80 text-[#008763] dark:text-[#00c896] text-xs font-semibold uppercase tracking-wider mb-4 font-mono shadow-sm dark:shadow-none">
+            <Cpu className="w-3.5 h-3.5" />
             <span>Execution Protocol</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-neutral-900 dark:text-white leading-tight">
             How we engineer systems from{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#00c896] to-[#00b285]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-neutral-900 via-[#008763] to-[#008763] dark:from-white dark:via-[#00c896] dark:to-[#00b285]">
               blueprint to deployment.
             </span>
           </h2>
-          <p className="mt-4 text-sm sm:text-base text-neutral-400">
+          <p className="mt-4 text-sm sm:text-base text-neutral-600 dark:text-neutral-400 font-mono">
             No guesswork, no bloated timelines. A structured 4-phase methodology that ensures precision, performance, and measurable commercial ROI.
           </p>
         </div>
@@ -98,42 +98,42 @@ export function SystemsWorkflow() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.45, delay: index * 0.1 }}
-                className="group relative flex flex-col justify-between rounded-2xl border border-[#1f1f1f] bg-[#1f1f1f]/35 p-6 hover:border-[#00c896]/50 hover:bg-[#1f1f1f]/60 transition-all duration-300 backdrop-blur-sm"
+                className="group relative flex flex-col justify-between rounded-2xl border border-neutral-200 dark:border-[#1f1f1f] bg-white/80 dark:bg-[#141414]/70 p-6 hover:border-[#008763]/50 dark:hover:border-[#00c896]/60 hover:bg-neutral-50/90 dark:hover:bg-[#181818]/90 transition-all duration-300 backdrop-blur-md shadow-sm dark:shadow-none"
               >
                 {/* Step Index & Icon */}
                 <div>
                   <div className="flex items-center justify-between mb-5">
-                    <span className="text-2xl font-mono font-bold text-neutral-600 group-hover:text-[#00c896] transition-colors">
+                    <span className="text-2xl font-mono font-bold text-neutral-400 dark:text-neutral-600 group-hover:text-[#008763] dark:group-hover:text-[#00c896] transition-colors">
                       {item.step}
                     </span>
-                    <div className="w-10 h-10 rounded-xl bg-[#1f1f1f] border border-[#1f1f1f] group-hover:border-[#00c896]/40 flex items-center justify-center text-[#00c896] transition-colors">
+                    <div className="w-10 h-10 rounded-xl bg-neutral-100 dark:bg-[#1f1f1f] border border-neutral-200 dark:border-[#1f1f1f] group-hover:border-[#008763]/40 dark:group-hover:border-[#00c896]/40 flex items-center justify-center text-[#008763] dark:text-[#00c896] transition-colors shadow-sm dark:shadow-none">
                       <Icon className="w-5 h-5" />
                     </div>
                   </div>
 
                   {/* Phase & Timeline */}
-                  <div className="inline-block text-[10px] font-mono uppercase tracking-wider text-[#00c896] font-semibold bg-[#00c896]/10 px-2.5 py-0.5 rounded-full mb-2">
+                  <div className="inline-block text-[10px] font-mono uppercase tracking-wider text-[#008763] dark:text-[#00c896] font-semibold bg-[#008763]/10 dark:bg-[#00c896]/10 px-2.5 py-0.5 rounded-full mb-2 border border-[#008763]/20 dark:border-[#00c896]/20">
                     {item.timeline}
                   </div>
-                  <h3 className="text-lg font-bold text-white group-hover:text-[#00c896] transition-colors">
+                  <h3 className="text-lg font-bold text-neutral-900 dark:text-white group-hover:text-[#008763] dark:group-hover:text-[#00c896] transition-colors">
                     {item.phase}
                   </h3>
 
                   {/* Description */}
-                  <p className="mt-3 text-xs sm:text-sm text-neutral-400 leading-relaxed">
+                  <p className="mt-3 text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
                     {item.description}
                   </p>
                 </div>
 
                 {/* Deliverables Checklist */}
-                <div className="mt-6 pt-5 border-t border-[#1f1f1f]">
-                  <span className="block text-[11px] uppercase tracking-wider text-neutral-500 font-semibold mb-2">
+                <div className="mt-6 pt-5 border-t border-neutral-200 dark:border-[#1f1f1f]">
+                  <span className="block text-[11px] uppercase tracking-wider text-neutral-500 font-semibold mb-2 font-mono">
                     Core Output:
                   </span>
-                  <ul className="space-y-1.5 text-xs text-neutral-300">
+                  <ul className="space-y-1.5 text-xs text-neutral-700 dark:text-neutral-300 font-mono">
                     {item.deliverables.map((d, dIdx) => (
                       <li key={dIdx} className="flex items-start gap-1.5">
-                        <span className="text-[#00c896] font-bold">›</span>
+                        <span className="text-[#008763] dark:text-[#00c896] font-bold">›</span>
                         <span>{d}</span>
                       </li>
                     ))}
@@ -148,10 +148,10 @@ export function SystemsWorkflow() {
         <div className="mt-12 sm:mt-16 text-center">
           <Link
             href="#contact"
-            className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-neutral-400 hover:text-[#00c896] transition-colors group"
+            className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-neutral-600 hover:text-[#008763] dark:text-neutral-400 dark:hover:text-[#00c896] transition-colors group font-mono"
           >
             <span>Have custom systems requirements? Let&apos;s map out your architecture</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform text-[#00c896]" />
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform text-[#008763] dark:text-[#00c896]" />
           </Link>
         </div>
 
